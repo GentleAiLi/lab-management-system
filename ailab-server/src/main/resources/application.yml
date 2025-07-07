@@ -1,0 +1,55 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: ailab-server
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.100.128:3306/ailab_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: 123
+    hikari:
+      maximum-pool-size: 10 # 连接池最大连接数
+      minimum-idle: 2 # 连接池最小空闲连接数
+      idle-timeout: 600000 # 空闲连接超时时间，单位毫秒
+      connection-timeout: 30000 # 连接超时时间，单位毫秒
+      connection-init-sql: SELECT 1 # 初始化连接时执行的SQL语句
+      initialization-fail-timeout: 1000 # 连接池初始化失败超时时间
+      auto-commit: true # 自动提交
+  data:
+    redis:
+      host: 192.168.100.128
+      port: 6379
+      password: 1234
+      lettuce:
+        pool:
+          max-active: 10 # 连接池最大连接数
+          max-idle: 10 # 连接池最大空闲连接数
+          min-idle: 1 # 连接池最小空闲连接数
+          time-between-eviction-runs: 10s # 连接池空闲连接检测线程运行间隔
+      database: 10
+
+mybatis-plus:
+  type-aliases-package: com.ailab.pojo.domain # 实体类包路径
+  mapper-locations: "classpath*:/mapper/**/*.xml" # Mapper.xml文件路径
+  configuration:
+    map-underscore-to-camel-case: true # 下滑线转驼峰
+    cache-enabled: false # 是否开启二级缓存
+  global-config:
+    db-config:
+      update-strategy: not_null # 更新策略
+ailab:
+  jwt:
+    secret-key: ailabsecretkeyqwertyuiopasdfghjkl # JWT密钥
+    access-token-expiration: 7200000 # 访问令牌过期时间，2小时
+    access-token-name: accessToken # 访问令牌名称
+    refresh-token-expiration: 604800000 # 刷新令牌过期时间，7天
+    refresh-token-name: refreshToken # 刷新令牌名称
+    cookie-domain: localhost # 服务器域名
+  cors:
+    mapping: /** # 跨域映射路径
+    allowed-origins: localhost:6173 # 允许的跨域源
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS # 允许的跨域方法
+    allowed-headers: "*" # 允许的跨域头部
+    allow-credentials: true # 是否允许携带凭证
+    max-age: 3600 # 预检请求缓存时间，单位秒
