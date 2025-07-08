@@ -64,5 +64,12 @@ class AilabServerApplicationTests {
 		System.out.println("userInfo: " + authLoginDTO);
 	}
 
+	@Test
+	public void testPassword() {
+		String password = "123456";
+		String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+		System.out.println("Hashed Password: " + hashedPassword);
+	}
+
 
 }

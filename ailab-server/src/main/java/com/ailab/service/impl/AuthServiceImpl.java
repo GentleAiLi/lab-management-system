@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
                 .eq(User::getAccountName, loginInfo.getAccountName()));
 
         // 判断账户名和密码是否匹配
-        if (user == null || BCrypt.checkpw(loginInfo.getPassword(), user.getPassword())) {
+        if (user == null || !BCrypt.checkpw(loginInfo.getPassword(), user.getPassword())) {
             throw new AuthLoginException("登录失败，账户名或密码错误");
         }
 
