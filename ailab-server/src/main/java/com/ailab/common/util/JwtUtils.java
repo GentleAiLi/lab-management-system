@@ -1,12 +1,11 @@
 package com.ailab.common.util;
 
 
+import com.ailab.common.exception.BaseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -42,16 +41,21 @@ public class JwtUtils {
     /**
      * 解析token
      *
-     * @param secretKey 秘钥
      * @param token     加密的token
+     * @param secretKey 秘钥
      * @return 设置的信息
      */
-    public static Claims parseToken(String secretKey, String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getKey(secretKey))
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    public static Claims parseToken(String token, String secretKey) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(getKey(secretKey))
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException |
+                 IllegalArgumentException e) {
+            throw new BaseException("token解析失败", e);
+        }
     }
 
     /**
@@ -90,8 +94,8 @@ public class JwtUtils {
      * @param cookieName
      * @param cookieDomain
      */
-    public static void setRefreshTokenCookie(HttpServletResponse response, String refreshToken,
-                                             String cookieName, String cookieDomain) {
+    public static void setRefreshTokenToCookie(HttpServletResponse response, String refreshToken,
+                                               String cookieName, String cookieDomain) {
         Cookie refreshTokenCookie = new Cookie(cookieName, refreshToken);
         refreshTokenCookie.setDomain(cookieDomain); // 设置Cookie的域名
         refreshTokenCookie.setHttpOnly(true); // 设置为HttpOnly，防止JavaScript访问

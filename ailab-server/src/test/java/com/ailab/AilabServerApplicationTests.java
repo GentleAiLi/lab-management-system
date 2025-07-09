@@ -1,5 +1,6 @@
 package com.ailab;
 
+import com.ailab.common.properties.JwtProperties;
 import com.ailab.common.util.JwtUtils;
 import com.ailab.mapper.UserMapper;
 import com.ailab.pojo.dto.AuthLoginDTO;
@@ -19,6 +20,8 @@ class AilabServerApplicationTests {
 
 	@Resource
 	private UserMapper userMapper;
+	@Resource
+	private JwtProperties jwtProperties;
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 

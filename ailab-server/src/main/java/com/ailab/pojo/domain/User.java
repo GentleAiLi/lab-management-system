@@ -1,6 +1,7 @@
 package com.ailab.pojo.domain;
 
 import com.ailab.common.enums.UserRoleEnum;
+import com.ailab.common.enums.UserStatusEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -41,7 +42,7 @@ CREATE TABLE IF NOT EXISTS user
     private String phone; // 用户电话
     private UserRoleEnum role; // 身份权限，1管理员，0普通用户
     private String sno; // 学号
-    private Integer status; // 账号状态，0禁用，1启用
+    private UserStatusEnum status; // 账号状态，0禁用，1启用
     private LocalDateTime createTime; // 创建时间
     private LocalDateTime updateTime; // 更新时间
 

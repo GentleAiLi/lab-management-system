@@ -1,26 +1,15 @@
 package com.ailab.service.impl;
 
-import com.ailab.common.constant.AuthTokenConstant;
-import com.ailab.common.exception.AuthLoginException;
-import com.ailab.common.exception.BaseException;
+import com.ailab.common.constant.ExceptionConstant;
 import com.ailab.common.exception.InfoNotFoundException;
-import com.ailab.common.properties.JwtProperties;
-import com.ailab.common.util.JwtUtils;
 import com.ailab.mapper.UserMapper;
 import com.ailab.pojo.domain.User;
-import com.ailab.pojo.dto.AuthLoginDTO;
-import com.ailab.pojo.vo.AuthLoginVO;
 import com.ailab.service.UserService;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +31,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .eq(User::getId, id));
 
         if (user == null) {
-            throw new InfoNotFoundException("用户信息不存在");
+            throw new InfoNotFoundException(ExceptionConstant.USER_NOT_FOUND);
         }
 
         return user;

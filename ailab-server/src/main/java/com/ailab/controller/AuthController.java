@@ -4,6 +4,7 @@ import com.ailab.common.result.ResponseResult;
 import com.ailab.pojo.dto.AuthLoginDTO;
 import com.ailab.pojo.vo.AuthLoginVO;
 import com.ailab.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,5 +25,18 @@ public class AuthController {
         return ResponseResult.success(authLoginVO);
     }
 
+    @GetMapping("/logout")
+    protected ResponseResult<Void> logout() {
+        log.info("用户登出请求");
+        authService.logout();
+        return ResponseResult.success();
+    }
+
+    @GetMapping("/refresh")
+    protected ResponseResult<AuthLoginVO> refresh(HttpServletRequest request) {
+        log.info("用户刷新访问令牌请求");
+        AuthLoginVO authLoginVO = authService.refreshAccessToken(request);
+        return ResponseResult.success(authLoginVO);
+    }
 
 }

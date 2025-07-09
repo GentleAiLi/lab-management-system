@@ -4,7 +4,6 @@ import com.ailab.interceptor.TokenInterceptor;
 import io.micrometer.common.lang.NonNullApi;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -26,21 +25,8 @@ public class MvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor)
                 .addPathPatterns("/**") // 拦截所有请求
-                .excludePathPatterns("/api/auth/login"); // 排除登录接口
+                .excludePathPatterns("/api/auth/login",
+                        "/api/auth/refresh"); // 排除接口
     }
 
-    /**
-     * 添加CORS配置
-     *
-     * @param registry
-     */
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**") // 允许所有路径
-//                .allowedOrigins("http://localhost:6173") // 允许的源，可以指定具体的域名或IP地址
-//                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 允许的HTTP方法
-//                .allowedHeaders("*") // 允许所有请求头
-//                .allowCredentials(true) // 是否允许发送Cookie
-//                .maxAge(3600); // 预检请求的缓存时间，单位为秒
-//    }
 }
