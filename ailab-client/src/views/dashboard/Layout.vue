@@ -45,9 +45,15 @@ const username = computed(() => userStore.username)
 const isAdmin = computed(() => userStore.isAdmin)
 
 // 处理退出登录
-const handleLogout = () => {
-  userStore.logout()
-  router.push('/')
+const handleLogout = async () => {
+  try {
+    await userStore.logout()
+    router.push('/')
+  } catch (error) {
+    console.error('退出登录失败:', error)
+    // 即使API调用失败，也尝试本地登出并跳转
+    router.push('/')
+  }
 }
 
 // 进入管理端

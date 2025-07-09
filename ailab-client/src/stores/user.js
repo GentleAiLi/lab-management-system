@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { userApi } from '../api'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
@@ -19,11 +20,41 @@ export const useUserStore = defineStore('user', {
       this.token = token
       localStorage.setItem('token', token)
     },
-    logout() {
-      this.token = ''
-      this.userInfo = {}
-      localStorage.removeItem('token')
-      localStorage.removeItem('userInfo')
+    async refreshToken() {
+      try {
+        const response = await userApi.refreshToken()
+        if (response.code === 1 && response.data) {
+          // 根据新的API响应格式处理数据
+          const { accessToken, accountName, id, role } = response.data
+          // 更新token
+          this.setToken(accessToken)
+          // 更新用户信息
+          this.setUserInfo({
+            id,
+            username: accountName,
+            role: role === 1 ? 'admin' : 'user'
+          })
+          return true
+        }
+        return false
+      } catch (error) {
+        console.error('刷新令牌失败:', error)
+        return false
+      }
+    },
+    async logout() {
+      try {
+        // 调用登出API
+        await userApi.logout()
+      } catch (error) {
+        console.error('登出失败:', error)
+      } finally {
+        // 无论API调用成功与否，都清除本地状态
+        this.token = ''
+        this.userInfo = {}
+        localStorage.removeItem('token')
+        localStorage.removeItem('userInfo')
+      }
     }
   }
 })

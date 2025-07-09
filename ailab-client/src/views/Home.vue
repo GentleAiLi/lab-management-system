@@ -68,14 +68,27 @@ const articleList = ref([
   }
 ])
 
-// 处理登录按钮点击
-const handleLogin = () => {
-  router.push('/login')
-}
-
-// 处理进入用户中心
-const handleEnterDashboard = () => {
-  router.push('/dashboard')
+// 处理进入系统按钮点击
+const handleEnterSystem = async () => {
+  if (userStore.isLoggedIn) {
+    // 已登录，直接进入系统
+    router.push('/dashboard')
+  } else {
+    // 尝试刷新令牌
+    try {
+      const success = await userStore.refreshToken()
+      if (success) {
+        // 刷新成功，进入系统
+        router.push('/dashboard')
+      } else {
+        // 刷新失败，跳转到登录页
+        router.push('/login')
+      }
+    } catch (error) {
+      console.error('刷新令牌失败:', error)
+      router.push('/login')
+    }
+  }
 }
 
 // 滚动到指定部分
@@ -113,12 +126,7 @@ const handleNavClick = (path) => {
           </ul>
         </nav>
         <div class="user-actions">
-          <template v-if="userStore.isLoggedIn">
-            <el-button type="primary" @click="handleEnterDashboard">进入系统</el-button>
-          </template>
-          <template v-else>
-            <el-button type="primary" @click="handleLogin">登录</el-button>
-          </template>
+          <el-button type="primary" @click="handleEnterSystem">进入系统</el-button>
         </div>
       </div>
     </header>
@@ -129,7 +137,7 @@ const handleNavClick = (path) => {
         <div class="banner-content">
           <h1 class="banner-title">欢迎来到AI实验室</h1>
           <p class="banner-description">我们致力于人工智能技术的研究与应用，为学生和研究人员提供先进的设备和资源支持</p>
-          <el-button type="primary" size="large" @click="handleLogin">立即加入</el-button>
+          <el-button type="primary" size="large" @click="handleEnterSystem">立即加入</el-button>
         </div>
       </div>
     </section>

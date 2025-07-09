@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from '../stores/user'
 
 const routes = [
   {
@@ -104,8 +105,10 @@ const router = createRouter({
   routes
 })
 
+// 路由守卫配置
+
 // 全局前置守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // 设置页面标题
   document.title = to.meta.title ? `${to.meta.title} - 实验室管理系统` : '实验室管理系统'
   
@@ -124,12 +127,25 @@ router.beforeEach((to, from, next) => {
       if (to.matched.some(record => record.meta.requiresAdmin) && userInfo.role !== 'admin') {
         next({ path: '/dashboard' })
       } else {
+        // 如果令牌即将过期，尝试刷新令牌
+        // 这里可以添加令牌过期时间的检查逻辑
+        // 为简化实现，此处不检查过期时间，仅作为示例
+        // const tokenExpiresSoon = checkIfTokenExpiresSoon()
+        // if (tokenExpiresSoon) {
+        //   const userStore = useUserStore()
+        //   await userStore.refreshToken()
+        // }
         next()
       }
     }
   } else {
     next()
   }
+})
+
+// 全局后置钩子
+router.afterEach(() => {
+  // 可以在这里添加页面加载完成后的逻辑
 })
 
 export default router
