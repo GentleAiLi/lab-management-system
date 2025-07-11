@@ -1,6 +1,8 @@
 package com.ailab;
 
+import com.ailab.common.properties.AesProperties;
 import com.ailab.common.properties.JwtProperties;
+import com.ailab.common.util.AesUtils;
 import com.ailab.common.util.JwtUtils;
 import com.ailab.mapper.UserMapper;
 import com.ailab.pojo.dto.AuthLoginDTO;
@@ -11,7 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +29,8 @@ class AilabServerApplicationTests {
 	private UserMapper userMapper;
 	@Resource
 	private JwtProperties jwtProperties;
+	@Resource
+	private AesProperties aesProperties;
 
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -31,7 +40,7 @@ class AilabServerApplicationTests {
 			System.out.println("User ID: " + user.getId());
 			System.out.println("Account Name: " + user.getAccountName());
 			System.out.println("Name: " + user.getName());
-			System.out.println("Phone: " + user.getPhone());
+			System.out.println("Email: " + user.getEmail());
 			System.out.println("Role: " + user.getRole());
 			System.out.println("SNO: " + user.getSno());
 			System.out.println("Create Time: " + user.getCreateTime());
@@ -74,5 +83,13 @@ class AilabServerApplicationTests {
 		System.out.println("Hashed Password: " + hashedPassword);
 	}
 
+	@Test
+	public void testAes() {
+		String email = "123@example.com";
+		String encrypt = AesUtils.encrypt(email, aesProperties.getKey());
+		System.out.println("Encrypted Email: " + encrypt);
+		String decrypt = AesUtils.decrypt(encrypt, aesProperties.getKey());
+		System.out.println("Decrypted Email: " + decrypt);
+	}
 
 }

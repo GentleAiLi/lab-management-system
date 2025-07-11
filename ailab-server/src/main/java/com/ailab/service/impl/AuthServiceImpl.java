@@ -7,6 +7,7 @@ import com.ailab.common.enums.RedisEnum;
 import com.ailab.common.enums.UserStatusEnum;
 import com.ailab.common.exception.AuthException;
 import com.ailab.common.properties.JwtProperties;
+import com.ailab.common.util.BCryptUtils;
 import com.ailab.common.util.JwtUtils;
 import com.ailab.mapper.UserMapper;
 import com.ailab.pojo.domain.User;
@@ -50,7 +51,7 @@ public class AuthServiceImpl implements AuthService {
                 .eq(User::getAccountName, loginInfo.getAccountName()));
 
         // 判断账户名和密码是否匹配
-        if (user == null || !BCrypt.checkpw(loginInfo.getPassword(), user.getPassword())) {
+        if (user == null || !BCryptUtils.checkData(loginInfo.getPassword(), user.getPassword())) {
             throw new AuthException(AuthConstant.LOGIN_FAILED_MESSAGE);
         }
 
@@ -75,8 +76,8 @@ public class AuthServiceImpl implements AuthService {
                 Map.of(AuthConstant.JWT_CLAIMS_USER_INFO, authLoginInfo));
 
         // 将刷新令牌存储在 Cookie 中
-        JwtUtils.setRefreshTokenToCookie(response, refreshToken,
-                jwtProperties.getRefreshTokenName(), jwtProperties.getCookieDomain());
+        JwtUtils.setRefreshTokenToCookie(response, refreshToken, jwtProperties.getRefreshTokenName(),
+                jwtProperties.getCookieDomain(), (int) (jwtProperties.getRefreshTokenExpiration() / 1000));
 
         // 将刷新令牌存入redis
         stringRedisTemplate.opsForValue().set(RedisEnum.USER_REFRESH_TOKEN.getKey() + user.getId(),

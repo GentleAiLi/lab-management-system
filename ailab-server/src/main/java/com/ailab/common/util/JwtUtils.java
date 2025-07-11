@@ -95,13 +95,13 @@ public class JwtUtils {
      * @param cookieDomain
      */
     public static void setRefreshTokenToCookie(HttpServletResponse response, String refreshToken,
-                                               String cookieName, String cookieDomain) {
+                                               String cookieName, String cookieDomain, int maxAge) {
         Cookie refreshTokenCookie = new Cookie(cookieName, refreshToken);
         refreshTokenCookie.setDomain(cookieDomain); // 设置Cookie的域名
         refreshTokenCookie.setHttpOnly(true); // 设置为HttpOnly，防止JavaScript访问
         // refreshTokenCookie.setSecure(true); // 只能在 HTTPS 下传输
         refreshTokenCookie.setPath("/api/auth");
-        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 设置过期时间为7天
+        refreshTokenCookie.setMaxAge(maxAge); // 设置过期时间，单位秒
         response.addCookie(refreshTokenCookie);
     }
 }

@@ -53,3 +53,5 @@ ailab:
     allowed-headers: "*" # 允许的跨域头部
     allow-credentials: true # 是否允许携带凭证
     max-age: 3600 # 预检请求缓存时间，单位秒
+  aes:
+    key: RHVOP9jOPW4Hl+twdFvg1v+6HKYr99Gs2V8MAwFx35k= # AES加密密钥
